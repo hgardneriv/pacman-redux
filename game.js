@@ -390,7 +390,7 @@ if (TOUCH_DEVICE) {
   // thumb currently rests triggers a turn — no return-to-center needed.
   function showKnobDir(dir) {
     const r = stick.getBoundingClientRect();
-    const off = r.width * .26, d = DIRS[dir];
+    const off = r.width * .16, d = DIRS[dir];
     knob.style.transform = `translate(calc(-50% + ${d.x * off}px), calc(-50% + ${d.y * off}px))`;
   }
   function jMove(t) {

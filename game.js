@@ -392,8 +392,8 @@ if (TOUCH_DEVICE) {
     const max = r.width * .3, len = Math.hypot(dx, dy) || 1;
     const k = Math.min(1, max / len);
     knob.style.transform = `translate(calc(-50% + ${dx * k}px), calc(-50% + ${dy * k}px))`;
-    // small dead-zone so direction flips fast on short thumb moves
-    if (len > r.width * .07)
+    // tiny dead-zone so direction flips on the slightest thumb move
+    if (len > r.width * .05)
       desiredDir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? RIGHT : LEFT) : (dy > 0 ? DOWN : UP);
   }
   function jEnd() { sid = null; knob.style.transform = 'translate(-50%,-50%)'; }

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PACMAN REDUX</title>
+<meta name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<style>
+  html,body{margin:0;padding:0;background:#000;height:100%;overflow:hidden;
+    font-family:"Courier New",monospace;
+    touch-action:none;-webkit-user-select:none;user-select:none;
+    -webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
+  canvas{background:#000;box-shadow:0 0 70px rgba(255,220,40,.14);touch-action:none;}
+  #crt{position:fixed;inset:0;pointer-events:none;z-index:5;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);
+    mix-blend-mode:multiply;}
+
+  #mute{position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));
+    z-index:20;width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,220,60,.35);
+    background:rgba(30,30,0,.35);color:#ffd23f;font-size:19px;line-height:38px;text-align:center;
+    cursor:pointer;}
+
+  /* ---- on-screen controls (created by game.js only on touch devices) ---- */
+  #touch{position:fixed;inset:0;z-index:10;pointer-events:none;display:none;}
+  #stick{position:absolute;left:max(5vmin,env(safe-area-inset-left));
+    bottom:max(6vmin,env(safe-area-inset-bottom));
+    width:38vmin;height:38vmin;max-width:220px;max-height:220px;
+    border-radius:50%;pointer-events:auto;touch-action:none;
+    border:2px solid rgba(255,220,60,.35);
+    background:radial-gradient(circle,rgba(255,210,60,.09),rgba(255,210,60,.02));
+    box-shadow:0 0 22px rgba(255,210,60,.18) inset;}
+  #knob{position:absolute;left:50%;top:50%;
+    width:16vmin;height:16vmin;max-width:95px;max-height:95px;border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 35% 32%,#fff27a,#ffd21f 55%,#c79b00);
+    border:2px solid rgba(255,240,170,.8);box-shadow:0 0 18px rgba(255,210,50,.55);}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="cv" width="448" height="576"></canvas></div>
+<div id="crt"></div>
+<div id="mute" title="mute (M)">&#128266;</div>
+<script src="game.js"></script>
+</body>
+</html>

@@ -362,7 +362,7 @@ cv.addEventListener('touchmove', e => {
   if (!swipe) return;
   const t = e.changedTouches[0];
   const dx = t.clientX - swipe.x, dy = t.clientY - swipe.y;
-  if (Math.abs(dx) < 22 && Math.abs(dy) < 22) return;
+  if (Math.abs(dx) < 14 && Math.abs(dy) < 14) return;
   desiredDir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? RIGHT : LEFT) : (dy > 0 ? DOWN : UP);
   swipe = { x: t.clientX, y: t.clientY };
 }, { passive: false });
@@ -378,32 +378,37 @@ if (TOUCH_DEVICE) {
   wrap.innerHTML = '<div id="stick"><div id="knob"></div></div>';
   document.body.appendChild(wrap);
   const stick = wrap.querySelector('#stick'), knob = wrap.querySelector('#knob');
-  let sid = null, touchShown = false;
+  let sid = null, touchShown = false, anchor = null;
+  const FLICK = 8;    // px of thumb travel that triggers a turn
   setTouchVisible = show => {
     if (show === touchShown) return;
     touchShown = show;
     wrap.style.display = show ? 'block' : 'none';
     if (!show) jEnd();
   };
-  function jMove(t) {
+  // Relative "flick" model: each small directional move from wherever the
+  // thumb currently rests triggers a turn — no return-to-center needed.
+  function showKnobDir(dir) {
     const r = stick.getBoundingClientRect();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    let dx = t.clientX - cx, dy = t.clientY - cy;
-    const max = r.width * .3, len = Math.hypot(dx, dy) || 1;
-    const k = Math.min(1, max / len);
-    knob.style.transform = `translate(calc(-50% + ${dx * k}px), calc(-50% + ${dy * k}px))`;
-    // tiny dead-zone so direction flips on the slightest thumb move
-    if (len > r.width * .05)
-      desiredDir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? RIGHT : LEFT) : (dy > 0 ? DOWN : UP);
+    const off = r.width * .26, d = DIRS[dir];
+    knob.style.transform = `translate(calc(-50% + ${d.x * off}px), calc(-50% + ${d.y * off}px))`;
   }
-  function jEnd() { sid = null; knob.style.transform = 'translate(-50%,-50%)'; }
+  function jMove(t) {
+    const dx = t.clientX - anchor.x, dy = t.clientY - anchor.y;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < FLICK) return;
+    desiredDir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? RIGHT : LEFT) : (dy > 0 ? DOWN : UP);
+    anchor = { x: t.clientX, y: t.clientY };   // re-anchor: next flick is fresh
+    showKnobDir(desiredDir);
+  }
+  function jEnd() { sid = null; anchor = null; knob.style.transform = 'translate(-50%,-50%)'; }
   stick.addEventListener('touchstart', e => {
     e.preventDefault(); initAudio();
-    sid = e.changedTouches[0].identifier; jMove(e.changedTouches[0]);
+    const t = e.changedTouches[0];
+    sid = t.identifier; anchor = { x: t.clientX, y: t.clientY };
   }, { passive: false });
   stick.addEventListener('touchmove', e => {
     e.preventDefault();
-    for (const t of e.changedTouches) if (t.identifier === sid) jMove(t);
+    for (const t of e.changedTouches) if (t.identifier === sid && anchor) jMove(t);
   }, { passive: false });
   stick.addEventListener('touchend', jEnd);
   stick.addEventListener('touchcancel', jEnd);

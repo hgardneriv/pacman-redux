@@ -93,14 +93,20 @@ function fruitIndex(L) {
 
 //////////////////////// LEVEL TABLES /////////////////////////
 
+// Gentler-than-arcade early ramp: ghosts start slow and reach the
+// authentic arcade speed tables around level 7.
 function speedSpec(L) {
-  if (L === 1)  return { pac: .80, pacF: .90, ghost: .75, fright: .50, tunnel: .40 };
-  if (L <= 4)   return { pac: .90, pacF: .95, ghost: .85, fright: .55, tunnel: .45 };
+  if (L === 1)  return { pac: .80, pacF: .90, ghost: .60, fright: .45, tunnel: .35 };
+  if (L === 2)  return { pac: .85, pacF: .95, ghost: .68, fright: .50, tunnel: .38 };
+  if (L === 3)  return { pac: .90, pacF: .95, ghost: .75, fright: .50, tunnel: .40 };
+  if (L === 4)  return { pac: .90, pacF: .95, ghost: .82, fright: .55, tunnel: .45 };
+  if (L === 5)  return { pac: 1.0, pacF: 1.0, ghost: .87, fright: .58, tunnel: .48 };
+  if (L === 6)  return { pac: 1.0, pacF: 1.0, ghost: .91, fright: .60, tunnel: .50 };
   if (L <= 20)  return { pac: 1.0, pacF: 1.0, ghost: .95, fright: .60, tunnel: .50 };
   return          { pac: .90, pacF: .90, ghost: .95, fright: .60, tunnel: .50 };
 }
 function frightSpec(L) {
-  const t = [6, 5, 4, 3, 2, 5, 2, 2, 1, 5, 2, 1, 1, 3, 1, 1, 0, 1, 0, 0];
+  const t = [8, 7, 6, 5, 4, 3, 2, 2, 1, 5, 2, 1, 1, 3, 1, 1, 0, 1, 0, 0];
   const f = [5, 5, 5, 5, 5, 5, 5, 5, 3, 5, 5, 3, 3, 5, 3, 3, 0, 3, 0, 0];
   const i = Math.min(L - 1, 19);
   return { time: t[i], flashes: f[i] };
@@ -110,8 +116,9 @@ function elroyDots(L) {
   return t[Math.min(L - 1, 18)];
 }
 function modeDurations(L) {
-  if (L === 1) return [7, 20, 7, 20, 5, 20, 5, Infinity];
-  if (L <= 4)  return [7, 20, 7, 20, 5, 1033, 1 / 60, Infinity];
+  if (L <= 2)  return [9, 15, 9, 15, 7, 15, 5, Infinity];   // more corner-patrol time
+  if (L <= 4)  return [7, 20, 7, 20, 5, 20, 5, Infinity];
+  if (L <= 6)  return [7, 20, 7, 20, 5, 1033, 1 / 60, Infinity];
   return         [5, 20, 5, 20, 5, 1037, 1 / 60, Infinity];
 }
 function houseDotLimit(L, name) {
@@ -733,7 +740,7 @@ function onDotEatenHouseLogic() {
 }
 function updateHouseTimeout(dt) {
   lastDotT += dt;
-  const limit = level < 5 ? 4 : 3;
+  const limit = level < 3 ? 5 : level < 5 ? 4 : 3;
   if (lastDotT >= limit) {
     lastDotT = 0;
     const g = nextHoused();

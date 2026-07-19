@@ -18,7 +18,8 @@ no original art, sprites, or music are used.
   - **Inky** (cyan) — flanks using a vector doubled from Blinky's position
   - **Clyde** (orange) — chases until he gets within 8 tiles, then shies away
 - Scatter/chase wave scheduling with per-level timings, and ghost reversal on mode change
-- Per-level speed tables (Pac-Man, ghosts, tunnel slowdown, frightened speeds)
+- Per-level speed tables (Pac-Man, ghosts, tunnel slowdown, frightened speeds) with a
+  gentler-than-arcade early ramp — ghosts start slow and reach authentic arcade speeds by level 7
 - Frightened time and flash counts that shrink each level (gone by level 17+)
 - Ghost-house dot counters, post-death global counter, and starvation-timeout release
 - Fruit at 70 and 170 dots: cherry → strawberry → orange → apple → melon → rocket → bell → key

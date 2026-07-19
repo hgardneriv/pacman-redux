@@ -371,28 +371,34 @@ cv.addEventListener('mousedown', () => {
   if (state === 'attract' || state === 'gameover') startGame();
 });
 
-// joystick widget (touch devices only)
+// joystick widget (touch devices only) — shown only during gameplay
+let setTouchVisible = () => {};
 if (TOUCH_DEVICE) {
   const wrap = document.createElement('div'); wrap.id = 'touch';
   wrap.innerHTML = '<div id="stick"><div id="knob"></div></div>';
   document.body.appendChild(wrap);
-  wrap.style.display = 'block';
   const stick = wrap.querySelector('#stick'), knob = wrap.querySelector('#knob');
-  let sid = null;
+  let sid = null, touchShown = false;
+  setTouchVisible = show => {
+    if (show === touchShown) return;
+    touchShown = show;
+    wrap.style.display = show ? 'block' : 'none';
+    if (!show) jEnd();
+  };
   function jMove(t) {
     const r = stick.getBoundingClientRect();
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     let dx = t.clientX - cx, dy = t.clientY - cy;
-    const max = r.width * .32, len = Math.hypot(dx, dy) || 1;
+    const max = r.width * .3, len = Math.hypot(dx, dy) || 1;
     const k = Math.min(1, max / len);
     knob.style.transform = `translate(calc(-50% + ${dx * k}px), calc(-50% + ${dy * k}px))`;
-    if (len > r.width * .12)
+    // small dead-zone so direction flips fast on short thumb moves
+    if (len > r.width * .07)
       desiredDir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? RIGHT : LEFT) : (dy > 0 ? DOWN : UP);
   }
   function jEnd() { sid = null; knob.style.transform = 'translate(-50%,-50%)'; }
   stick.addEventListener('touchstart', e => {
     e.preventDefault(); initAudio();
-    if (state === 'attract' || state === 'gameover') { startGame(); return; }
     sid = e.changedTouches[0].identifier; jMove(e.changedTouches[0]);
   }, { passive: false });
   stick.addEventListener('touchmove', e => {
@@ -838,6 +844,7 @@ function update(dt) {
       break;
   }
   updateEngine();
+  setTouchVisible(state !== 'attract' && state !== 'gameover');
 }
 
 //////////////////////// DRAWING //////////////////////////////

@@ -24,15 +24,15 @@
 
   /* ---- on-screen controls (created by game.js only on touch devices) ---- */
   #touch{position:fixed;inset:0;z-index:10;pointer-events:none;display:none;}
-  #stick{position:absolute;left:max(5vmin,env(safe-area-inset-left));
-    bottom:max(6vmin,env(safe-area-inset-bottom));
-    width:38vmin;height:38vmin;max-width:220px;max-height:220px;
+  #stick{position:absolute;left:50%;transform:translateX(-50%);
+    bottom:max(5vmin,env(safe-area-inset-bottom));
+    width:26vmin;height:26vmin;max-width:150px;max-height:150px;
     border-radius:50%;pointer-events:auto;touch-action:none;
     border:2px solid rgba(255,220,60,.35);
     background:radial-gradient(circle,rgba(255,210,60,.09),rgba(255,210,60,.02));
     box-shadow:0 0 22px rgba(255,210,60,.18) inset;}
   #knob{position:absolute;left:50%;top:50%;
-    width:16vmin;height:16vmin;max-width:95px;max-height:95px;border-radius:50%;
+    width:12vmin;height:12vmin;max-width:70px;max-height:70px;border-radius:50%;
     transform:translate(-50%,-50%);
     background:radial-gradient(circle at 35% 32%,#fff27a,#ffd21f 55%,#c79b00);
     border:2px solid rgba(255,240,170,.8);box-shadow:0 0 18px rgba(255,210,50,.55);}
